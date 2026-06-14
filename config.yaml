@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+venv/
+ENV/
+env/
+
+# Data and Logs
+*.csv
+*.xlsm
+Log.txt
+logs/
+
+# Configuration and Secrets (Uncomment if config.yaml contains sensitive data)
+# config.yaml
+
+# OS generated files
+.DS_Store
+Thumbs.db
