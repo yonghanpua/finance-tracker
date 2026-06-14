@@ -4,7 +4,7 @@ from config.settings import DB_DRIVER, DB_SERVER, DB_NAME
 
 def connectDB():
     ## Connecting to the SQL Server
-    driver = f"{{DB_DRIVER}}"
+    driver = f"{{{DB_DRIVER}}}"
     server =  DB_SERVER
     database = DB_NAME
 

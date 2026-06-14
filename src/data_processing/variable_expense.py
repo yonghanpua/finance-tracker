@@ -9,8 +9,6 @@ from config.settings import EXCEL_PATH, LOG_PATH
 
 # File Paths
 excelfilepath = EXCEL_PATH
-log_path = LOG_PATH
-# csvfilepath = r"data/Transactions 01 Jan 2024 - 31 Dec 2024.csv"
 
 # Function to map month numbers to month names
 def month_number_to_name(month_number):
@@ -55,10 +53,10 @@ def ProcessVarExp(csvfilepath):
         write_to_excel(excelfilepath, df_pivot_final)
         
         # Log the update
-        logResult(log_path, "Personal Portfolio Updated Successfully.")
+        logResult("Personal Portfolio Updated Successfully.")
         
     except Exception as e:
-        logResult(log_path, f"Error processing variable expenses: {e}")
+        logResult(f"Error processing variable expenses: {e}")
         raise
 
 # Load nad clean new data from CSV

@@ -2,14 +2,13 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from datetime import datetime
+from config.settings import LOG_PATH
 
-def get_logger(log_path: str) -> logging.Logger:
+def get_logger() -> logging.Logger:
     # Build path: logs/yyyy/mm/dd/Log.txt
     now = datetime.now()
-    base = Path(log_path)
+    base = Path(LOG_PATH)
     dated_path = base.parent / str(now.year) / f"{now.month:02d}" / f"{now.day:02d}" / base.name
-
-    # Create folders if they don't exist
     dated_path.parent.mkdir(parents=True, exist_ok=True)
 
     log_key = str(dated_path)
@@ -25,7 +24,7 @@ def get_logger(log_path: str) -> logging.Logger:
         logger.addHandler(handler)
     return logger
 
-def logResult(output_path: str, result:str):
-    get_logger(output_path).info(result)
+def logResult(result:str):
+    get_logger().info(result)
     
     

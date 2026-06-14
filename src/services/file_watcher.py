@@ -1,41 +1,37 @@
-import sys
 import os
 import time
 import logging
 import shutil
+from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from src.data_processing import variable_expense
-from src.utils.log_result import *
+from src.utils.log_result import logResult
+from config.settings import WATCH_DIR, LOG_PATH
 
 # ## from https://www.youtube.com/watch?v=3_0_9Rf1ouQ
 class Watcher:
-    
-    DIRECTORY_TO_WATCH = os.path.join(os.getcwd(), "data")
-    
-    
     def __init__(self):
         self.observer = Observer()
         
     def run(self):
-        log_path = "Log.txt"
         event_handler = Handler()
         # Set recursive to False to watch only the specified directory, not its subdirectories
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=False)
+        self.observer.schedule(event_handler, str(WATCH_DIR), recursive=False)
         self.observer.start()
         try:
             print("\nMonitoring")
-            logResult(log_path, "Service is starting...")
+            logResult("Service is starting...")
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
             self.observer.stop()
-            logResult(log_path, "Service is stopping...")
+            logResult("Service is stopping...")
         except Exception as e:
-            logging.error(f"Service encountered an error: {e}")
+            logResult(f"Service encountered an error: {e}")
         finally:
             print("\nDone")
-            logResult(log_path, "Service has stopped.")
+            logResult("Service has stopped.")
         self.observer.join()
 
 
@@ -63,40 +59,40 @@ class Handler(FileSystemEventHandler):
             path to the changed file
 
         """       
+        if event.is_directory:
+            return
+        
         # Process CSV files created or modified after the watcher started
         full_path = event.src_path
         file_name = os.path.basename(full_path)
-        destination_dir = os.path.join("data","Archived")
-        os.makedirs(destination_dir, exist_ok=True) # Ensure archive directory exists
-        dest_file_path = os.path.join(destination_dir,file_name)
-        log_path = "Log.txt"
+        destination_dir = Path(WATCH_DIR) / "Archived"
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        dest_file_path = destination_dir / file_name
         
         # Check if it's a file creation event
-        # logResult(log_path, f"Event Type: {event.event_type}")
         
-        if event.event_type == 'created' and os.path.isfile(event.src_path):
-            _, file_extension = os.path.splitext(event.src_path)
+        if event.event_type == 'created' and os.path.isfile(full_path):
+            _, file_extension = os.path.splitext(full_path)
             if file_extension.lower() == '.csv':
                 
-                logResult(log_path, f"New CSV file detected: {file_name}")
+                logResult(f"New CSV file detected: {file_name}")
                 time.sleep(2) # Add a delay to ensure file is ready
                 try:
                     # Process the new CSV File directly
                     variable_expense.ProcessVarExp(full_path)
-                    logResult(log_path, f"Processed File {file_name}")
+                    logResult(f"Processed File {file_name}")
                     # Move or delete the file after processing
                     # Check if the destination file exists:
-                    if os.path.exists(dest_file_path):
-                        # Remove the existing file
-                        os.remove(dest_file_path)
-                        logResult(log_path, f"Removed existing file: {dest_file_path}")
+                    if dest_file_path.exists():
+                        dest_file_path.unlink()
+                        logResult(f"Removed existing file: {dest_file_path}")
                     
                     # # Move the processed CSV file to destination
-                    shutil.move(event.src_path, destination_dir)
-                    logResult(log_path, f"Moved {file_name} to: {destination_dir}")
+                    shutil.move(full_path, str(destination_dir))
+                    logResult(f"Moved {file_name} to: {destination_dir}")
 
                 except Exception as e:
-                    logResult(log_path, f"Failed to processs file: {e}")
+                    logResult(f"Failed to processs file {file_name}: {e}")
             else:
                 
-                logResult(log_path, f"Rejected non-CSV file: {event.src_path}")
+                logResult(f"Rejected non-CSV file: {file_name}")
