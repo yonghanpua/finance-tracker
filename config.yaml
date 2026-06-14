@@ -1,23 +1,9 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+paths:
+  excel: "C:/Users/yongh/Downloads/FinanceTracker/Personal Portfolio.xlsm"
+  watch_dir: "data"
+  log: "logs/app.log"
 
-# Environments
-venv/
-ENV/
-env/
-
-# Data and Logs
-*.csv
-*.xlsm
-Log.txt
-logs/
-
-# Configuration and Secrets (Uncomment if config.yaml contains sensitive data)
-# config.yaml
-
-# OS generated files
-.DS_Store
-Thumbs.db
+database:
+  driver: "OCBC Driver 17 for SQL Server"
+  server: "YH-PC"
+  database: "Finance"

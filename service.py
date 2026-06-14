@@ -5,10 +5,12 @@ import servicemanager
 import socket
 import threading
 import time
-import os
-import sys
+import os, sys
+from pathlib import Path
 from src.services.file_watcher import Watcher
 from src.utils.log_result import logResult
+
+# Force working directory to the project root
 
 class AppServerSvc (win32serviceutil.ServiceFramework):
     _svc_name_ = "FileWatcherService"
@@ -32,6 +34,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
     def SvcDoRun(self):
         try:
+            os.chdir(Path(__file__).parent)
+            sys.path.insert(0, str(Path(__file__).parent))
+            
             logResult(self.log_path, "Service is starting up.")
             
             # Report service as running ASAP

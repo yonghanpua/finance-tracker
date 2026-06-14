@@ -96,7 +96,6 @@ class Handler(FileSystemEventHandler):
                     logResult(log_path, f"Moved {file_name} to: {destination_dir}")
 
                 except Exception as e:
-                    pass
                     logResult(log_path, f"Failed to processs file: {e}")
             else:
                 

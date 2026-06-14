@@ -1,16 +1,15 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pyodbc as odbc
+# import pyodbc as odbc
 import calendar
 import xlwings as xw
 from src.utils.log_result import logResult
 from src.db.connect_db import connectDB
+from config.settings import EXCEL_PATH, LOG_PATH
 
 # File Paths
-excelfilepath = r"C:/Users/yongh/OneDrive/01 Personal/03 Finance/01 Personal Portfolio/Personal Portfolio.xlsm"
-log_path = "Log.txt"
+excelfilepath = EXCEL_PATH
+log_path = LOG_PATH
 # csvfilepath = r"data/Transactions 01 Jan 2024 - 31 Dec 2024.csv"
 
 # Function to map month numbers to month names
@@ -37,7 +36,8 @@ def ProcessVarExp(csvfilepath):
         None
     """
     # Runs a connection to the database
-    connectDB
+    # engine = connectDB()
+
     try:
         # Load and filter new data from CSV
         df = load_and_clean_csv(csvfilepath)
